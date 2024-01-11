@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import './scss/TodoItem.scss';
 
-const TodoItem = ({ item, onRemove }) => {
+const TodoItem = ({ item, onRemove, onCheck }) => {
 
   const {id, title, done} = item;
 
@@ -14,9 +14,14 @@ const TodoItem = ({ item, onRemove }) => {
     onRemove(id);
   };
 
+  const checkHandler = e => {
+    // console.log('check!!');
+    onCheck(id);
+  };
+
   return (
     <li className='todo-list-item'>
-      <div className={cn('check-circle', {active: done})}>
+      <div className={cn('check-circle', {active: done})} onClick={checkHandler}>
         {done && <MdDone/>}
       </div>
       <span className={cn('text', {finish: done})}>{title}</span>

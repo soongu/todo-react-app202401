@@ -66,11 +66,29 @@ const TodoTemplate = () => {
     setTodoList(todoList.filter(todo => todo.id !== id));
   };
 
+  // 할 일 체크 처리 함수
+  const checkTodo = id => {
+    // console.log('check id: ', id);
+
+    // const copyTodoList = [...todoList];
+    //
+    // const foundTodo = copyTodoList.find(todo => todo.id === id);
+    // foundTodo.done = !foundTodo.done;
+    //
+    // setTodoList(copyTodoList);
+
+    setTodoList(todoList.map(todo => todo.id === id ? {...todo, done: !todo.done} : todo));
+
+  };
+
+
+  // 체크가 안된 할일 개수 카운트하기
+  const countRestTodo = todoList.filter(todo => !todo.done).length;
 
   return (
     <div className='TodoTemplate'>
-      <TodoHeader />
-      <TodoMain todoList={todoList} onRemove={removeTodo} />
+      <TodoHeader count={countRestTodo} />
+      <TodoMain todoList={todoList} onRemove={removeTodo} onCheck={checkTodo} />
       <TodoInput onAdd={addTodo} />
     </div>
   );
