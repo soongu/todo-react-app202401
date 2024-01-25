@@ -6,10 +6,22 @@ import TodoMain from "./TodoMain";
 
 import { TODO_URL } from "../../config/host-config";
 
+import {getCurrentLoginUser} from "../../util/login-util";
+
 const TodoTemplate = () => {
+
+  // 토큰 가져오기
+  const [token, setToken] = useState(getCurrentLoginUser().token);
 
   // 서버에서 할 일 목록 (JSON)을 요청해서 받아와야 함
   const API_BASE_URL = TODO_URL;
+
+  // 요청 헤더 객체
+  const requestHeader = {
+    'content-type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  };
+
 
   /*
       리액트는 부모컴포넌트에서 자식컴포넌트로의 데이터이동이 반대보다 쉽기 때문에
@@ -43,9 +55,7 @@ const TodoTemplate = () => {
 
     fetch(API_BASE_URL, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify(newTodo)
     })
       .then(res => res.json())
@@ -62,7 +72,8 @@ const TodoTemplate = () => {
     // setTodoList(todoList.filter(todo => todo.id !== id));
 
     fetch(`${API_BASE_URL}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: requestHeader
     })
       .then(res => res.json())
       .then(json => {
@@ -87,9 +98,7 @@ const TodoTemplate = () => {
 
     fetch(API_BASE_URL, {
       method: 'PUT',
-      headers: {
-        'content-type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         id: id,
         done: !done
@@ -109,7 +118,10 @@ const TodoTemplate = () => {
   // 렌더링 직전에 해야할 코드를 적는 함수
   useEffect(() => {
 
-    fetch(API_BASE_URL)
+    fetch(API_BASE_URL, {
+      method: 'GET',
+      headers: requestHeader
+    })
       .then(res => res.json())
       .then(json => {
         // console.log(json);
